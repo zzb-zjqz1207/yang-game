@@ -45,6 +45,20 @@
             <button class="action-btn" onclick="game.restart()">🔄 重新开始</button>
         </div>
 
+        <!-- 新手引导 -->
+        <div class="tutorial" id="tutorial">
+            <div class="tutorial-content">
+                <h2>🎮 游戏玩法</h2>
+                <ol>
+                    <li>点击卡片，它会移动到底部槽位</li>
+                    <li>凑齐 3 张相同图案即可消除</li>
+                    <li>槽位最多放 7 张卡片</li>
+                    <li>消除所有卡片即可通关！</li>
+                </ol>
+                <button class="action-btn" onclick="game.closeTutorial()">开始游戏</button>
+            </div>
+        </div>
+
         <!-- 游戏结束弹窗 -->
         <div class="modal" id="modal">
             <div class="modal-content">

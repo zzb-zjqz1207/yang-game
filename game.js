@@ -33,6 +33,7 @@ class YangGame {
         this.renderSlot();
         this.updateToolCounts();
         this.hideModal();
+        this.checkTutorial();
     }
     
     // 绑定全局事件，防止刷新
@@ -51,6 +52,28 @@ class YangGame {
         document.addEventListener('gesturestart', (e) => {
             e.preventDefault();
         }, false);
+    }
+    
+    // 关闭教程
+    closeTutorial() {
+        const tutorial = document.getElementById('tutorial');
+        if (tutorial) {
+            tutorial.style.display = 'none';
+        }
+        localStorage.setItem('yangGameTutorial', 'completed');
+    }
+    
+    // 检查是否显示教程
+    checkTutorial() {
+        const completed = localStorage.getItem('yangGameTutorial');
+        if (!completed) {
+            // 显示教程
+        } else {
+            const tutorial = document.getElementById('tutorial');
+            if (tutorial) {
+                tutorial.style.display = 'none';
+            }
+        }
     }
 
     // 创建卡片池
@@ -203,6 +226,13 @@ class YangGame {
         // 移动到槽位
         this.cardPool.splice(cardIndex, 1);
         this.slot.push(card);
+        
+        // 添加点击动画
+        const cardEl = document.querySelector(`[data-id="${cardId}"]`);
+        if (cardEl) {
+            cardEl.classList.add('clicked');
+            setTimeout(() => cardEl.classList.remove('clicked'), 300);
+        }
         
         // 渲染
         this.renderCardPool();
