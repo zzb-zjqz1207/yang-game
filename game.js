@@ -89,19 +89,20 @@ class YangGame {
                 cardEl.style.top = `${baseY + offsetY}px`;
                 cardEl.style.zIndex = index;
                 
-                // 只有最后一层的卡片可以点击（最上层）
+                // 所有卡片都可以点击，但下层卡片透明度低
                 const isTopLayer = (index >= this.cardPool.length - cardsPerLayer);
                 
-                if (isTopLayer) {
-                    cardEl.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.clickCard(card.id);
-                    });
-                } else {
-                    cardEl.style.opacity = '0.7';
-                    cardEl.style.filter = 'brightness(0.8)';
+                if (!isTopLayer) {
+                    cardEl.style.opacity = '0.6';
+                    cardEl.style.filter = 'brightness(0.7)';
                 }
+                
+                // 都绑定点击事件
+                cardEl.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.clickCard(card.id);
+                });
                 
                 cardEl.style.animationDelay = `${index * 0.015}s`;
                 poolEl.appendChild(cardEl);
