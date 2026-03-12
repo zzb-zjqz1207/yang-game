@@ -127,28 +127,35 @@ class YangGame {
                 cardEl.style.top = `${posY}px`;
                 cardEl.style.zIndex = index;
                 
-                // 检查是否可点击
-                const clickable = this.isCardClickable(card.id);
+                // 检查是否可点击（是否在最上层）
+                const clickable = this.isCardOnTop(index, this.cardPool.map((c, i) => ({
+                    x: 10 + Math.abs(Math.sin(i * 13.7) * ((poolWidth - cardWidth - 20) * 0.8)) + (Math.floor(i / cardsPerLayer) * 3),
+                    y: 10 + Math.abs(Math.cos(i * 19.3) * ((poolHeight - cardHeight - 20) * 0.8)) + (Math.floor(i / cardsPerLayer) * 2),
+                    width: cardWidth,
+                    height: cardHeight
+                })));
+                
                 if (!clickable) {
                     cardEl.classList.add('unclickable');
                     cardEl.style.pointerEvents = 'none';
+                } else {
+                    // 只有可点击的卡片才添加点击事件
+                    cardEl.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.clickCard(card.id, e);
+                        return false;
+                    }, false);
+                    
+                    cardEl.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.clickCard(card.id, e);
+                        return false;
+                    }, { passive: false });
                 }
                 
-                // 添加点击事件 - 使用 mousedown 避免点击穿透
-                cardEl.addEventListener('mousedown', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.cancelBubble = true;
-                    this.clickCard(card.id, e);
-                }, false);
-                
-                // 也支持 touch 事件
-                cardEl.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.cancelBubble = true;
-                    this.clickCard(card.id, e);
-                }, { passive: false });
+
                 
                 cardEl.style.animationDelay = `${index * 0.012}s`;
                 
