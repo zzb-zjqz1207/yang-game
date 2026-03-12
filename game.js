@@ -222,6 +222,18 @@ class YangGame {
         this.checkWin();
     }
     
+    // 检查卡片是否在最上层（没被其他卡片压住）
+    isCardOnTop(index, positions) {
+        const currentPos = positions[index];
+        for (let i = index + 1; i < positions.length; i++) {
+            const otherPos = positions[i];
+            if (this.isOverlapping(currentPos, otherPos, currentPos.width, currentPos.height)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     // 检查卡片是否可以被点击（是否在最上层）
     isCardClickable(cardId) {
         const cardIndex = this.cardPool.findIndex(c => c.id === cardId);
