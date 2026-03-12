@@ -1,0 +1,286 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    background: #f0f0f0;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.1em;
+}
+
+.score-board span {
+    color: #555;
+    font-weight: bold;
+}
+
+/* 卡片堆叠区域 */
+.card-pool {
+    min-height: 300px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+/* 槽位区域 */
+.slot-container {
+    background: #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.slot {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    min-height: 70px;
+    flex-wrap: wrap;
+}
+
+/* 卡片样式 */
+.card {
+    width: 60px;
+    height: 70px;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    user-select: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card:active {
+    transform: translateY(-2px);
+}
+
+.card.slot-card {
+    width: 50px;
+    height: 60px;
+    font-size: 1.5em;
+}
+
+/* 卡片堆叠效果 */
+.card-layer {
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+/* 工具按钮 */
+.tools {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tool-btn {
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tool-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tool-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.tool-btn .count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff6b6b;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 控制按钮 */
+.controls {
+    text-align: center;
+}
+
+.action-btn {
+    background: linear-gradient(145deg, #51cf66, #37b24d);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+}
+
+/* 弹窗 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+}
+
+/* 消除动画 */
+.card.matched {
+    animation: matchAnim 0.5s ease forwards;
+}
+
+@keyframes matchAnim {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 500px) {
+    .game-container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .card {
+        width: 50px;
+        height: 60px;
+        font-size: 1.5em;
+    }
+
+    .card.slot-card {
+        width: 42px;
+        height: 50px;
+        font-size: 1.2em;
+    }
+
+    .tools {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tool-btn {
+        flex: 1;
+        min-width: 80px;
+    }
+}

@@ -1,0 +1,316 @@
+// 羊羊消消乐 - 游戏逻辑
+
+class YangGame {
+    constructor() {
+        // 卡片图案（用 emoji 表示）
+        this.cardSymbols = ['🐑', '🌾', '✂️', '🧶', '🥕', '🍀', '🌸', '🍄'];
+        
+        // 游戏状态
+        this.level = 1;
+        this.score = 0;
+        this.slot = [];
+        this.slotMaxSize = 7;
+        this.cardPool = [];
+        
+        // 道具数量
+        this.undoCount = 3;
+        this.shuffleCount = 3;
+        this.removeCount = 3;
+        
+        // 历史记录（用于撤销）
+        this.history = [];
+        
+        // 初始化
+        this.init();
+    }
+
+    init() {
+        this.createCardPool();
+        this.renderCardPool();
+        this.renderSlot();
+        this.updateToolCounts();
+        this.hideModal();
+    }
+
+    // 创建卡片池
+    createCardPool() {
+        this.cardPool = [];
+        this.slot = [];
+        this.history = [];
+        
+        // 每种卡片生成 3 的倍数张（确保可以完全消除）
+        const cardsPerType = 9; // 每种 9 张，共 72 张卡片
+        
+        this.cardSymbols.forEach(symbol => {
+            for (let i = 0; i < cardsPerType; i++) {
+                this.cardPool.push({
+                    id: Math.random().toString(36).substr(2, 9),
+                    symbol: symbol,
+                    matched: false
+                });
+            }
+        });
+        
+        // 打乱卡片顺序
+        this.shuffleArray(this.cardPool);
+    }
+
+    // 洗牌算法
+    shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // 渲染卡片池
+    renderCardPool() {
+        const poolEl = document.getElementById('cardPool');
+        poolEl.innerHTML = '';
+        
+        this.cardPool.forEach((card, index) => {
+            if (!card.matched) {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card card-layer';
+                cardEl.textContent = card.symbol;
+                cardEl.onclick = () => this.clickCard(card.id);
+                
+                // 随机偏移，制造堆叠效果
+                const offsetX = (Math.random() - 0.5) * 40;
+                const offsetY = (Math.random() - 0.5) * 40;
+                cardEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+                cardEl.style.zIndex = index;
+                
+                poolEl.appendChild(cardEl);
+            }
+        });
+    }
+
+    // 渲染槽位
+    renderSlot() {
+        const slotEl = document.getElementById('slot');
+        slotEl.innerHTML = '';
+        
+        this.slot.forEach((card, index) => {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card slot-card';
+            cardEl.textContent = card.symbol;
+            cardEl.onclick = () => this.clickSlotCard(index);
+            slotEl.appendChild(cardEl);
+        });
+    }
+
+    // 点击卡片
+    clickCard(cardId) {
+        const cardIndex = this.cardPool.findIndex(c => c.id === cardId);
+        if (cardIndex === -1) return;
+        
+        const card = this.cardPool[cardIndex];
+        
+        // 检查槽位是否已满
+        if (this.slot.length >= this.slotMaxSize) {
+            this.showModal('游戏结束', '槽位已满，再试一次吧！😢');
+            return;
+        }
+        
+        // 保存到历史记录
+        this.saveHistory();
+        
+        // 移动到槽位
+        this.cardPool.splice(cardIndex, 1);
+        this.slot.push(card);
+        
+        // 渲染
+        this.renderCardPool();
+        this.renderSlot();
+        
+        // 检查匹配
+        this.checkMatch();
+        
+        // 检查胜利
+        this.checkWin();
+    }
+
+    // 点击槽位中的卡片（撤销操作）
+    clickSlotCard(index) {
+        if (this.undoCount <= 0) {
+            alert('撤销次数已用完！');
+            return;
+        }
+        
+        const card = this.slot[index];
+        
+        // 保存到历史记录
+        this.saveHistory();
+        
+        // 移回卡片池
+        this.slot.splice(index, 1);
+        this.cardPool.push(card);
+        
+        // 渲染
+        this.renderCardPool();
+        this.renderSlot();
+    }
+
+    // 检查匹配
+    checkMatch() {
+        const symbolCount = {};
+        
+        // 统计每种图案的数量
+        this.slot.forEach(card => {
+            symbolCount[card.symbol] = (symbolCount[card.symbol] || 0) + 1;
+        });
+        
+        // 找到可以消除的图案
+        for (const symbol in symbolCount) {
+            if (symbolCount[symbol] >= 3) {
+                // 消除 3 张
+                let removed = 0;
+                this.slot = this.slot.filter(card => {
+                    if (card.symbol === symbol && removed < 3) {
+                        removed++;
+                        return false;
+                    }
+                    return true;
+                });
+                
+                // 更新分数
+                this.score += removed * 10;
+                this.updateScore();
+                
+                // 渲染
+                this.renderSlot();
+                this.renderCardPool();
+                
+                break;
+            }
+        }
+    }
+
+    // 检查胜利
+    checkWin() {
+        if (this.cardPool.length === 0 && this.slot.length === 0) {
+            this.score += 100; // 通关奖励
+            this.updateScore();
+            this.showModal('🎉 恭喜通关！', `最终得分：${this.score} 分`);
+        }
+    }
+
+    // 检查失败
+    checkLoss() {
+        if (this.slot.length >= this.slotMaxSize) {
+            this.showModal('游戏结束', '槽位已满，再试一次吧！😢');
+        }
+    }
+
+    // 撤销
+    undo() {
+        if (this.undoCount <= 0 || this.history.length === 0) {
+            alert('没有可撤销的操作！');
+            return;
+        }
+        
+        this.undoCount--;
+        this.updateToolCounts();
+        
+        const lastState = this.history.pop();
+        this.cardPool = lastState.cardPool;
+        this.slot = lastState.slot;
+        
+        this.renderCardPool();
+        this.renderSlot();
+    }
+
+    // 洗牌
+    shuffle() {
+        if (this.shuffleCount <= 0) {
+            alert('洗牌次数已用完！');
+            return;
+        }
+        
+        this.shuffleCount--;
+        this.updateToolCounts();
+        
+        // 将槽位中的卡片移回卡片池
+        this.cardPool.push(...this.slot);
+        this.slot = [];
+        
+        // 打乱
+        this.shuffleArray(this.cardPool);
+        
+        this.renderCardPool();
+        this.renderSlot();
+    }
+
+    // 移除三张卡片
+    removeThree() {
+        if (this.removeCount <= 0) {
+            alert('移除次数已用完！');
+            return;
+        }
+        
+        if (this.slot.length < 3) {
+            alert('槽位中卡片不足 3 张！');
+            return;
+        }
+        
+        this.removeCount--;
+        this.updateToolCounts();
+        
+        // 移除槽位中前 3 张卡片
+        this.slot.splice(0, 3);
+        
+        this.renderSlot();
+    }
+
+    // 保存历史记录
+    saveHistory() {
+        this.history.push({
+            cardPool: [...this.cardPool],
+            slot: [...this.slot]
+        });
+        
+        // 限制历史记录长度
+        if (this.history.length > 10) {
+            this.history.shift();
+        }
+    }
+
+    // 更新分数显示
+    updateScore() {
+        document.getElementById('score').textContent = this.score;
+    }
+
+    // 更新道具计数
+    updateToolCounts() {
+        document.getElementById('undoCount').textContent = this.undoCount;
+        document.getElementById('shuffleCount').textContent = this.shuffleCount;
+        document.getElementById('removeCount').textContent = this.removeCount;
+    }
+
+    // 重新开始
+    restart() {
+        this.score = 0;
+        this.undoCount = 3;
+        this.shuffleCount = 3;
+        this.removeCount = 3;
+        this.updateScore();
+        this.updateToolCounts();
+        this.init();
+    }
+
+    // 显示弹窗
+    showModal(title, message) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+        document.getElementById('modal').classList.add('show');
+    }
+
+    // 隐藏弹窗
+    hideModal() {
+        document.getElementById('modal').classList.remove('show');
+    }
+}
+
+// 启动游戏
+const game = new YangGame();
