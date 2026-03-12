@@ -22,6 +22,9 @@ class YangGame {
         
         // 初始化
         this.init();
+        
+        // 绑定全局事件防止刷新
+        this.bindGlobalEvents();
     }
 
     init() {
@@ -30,6 +33,24 @@ class YangGame {
         this.renderSlot();
         this.updateToolCounts();
         this.hideModal();
+    }
+    
+    // 绑定全局事件，防止刷新
+    bindGlobalEvents() {
+        // 阻止默认的触摸滚动和点击
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // 阻止双击缩放
+        document.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+        }, false);
+        
+        // 阻止某些可能导致刷新的手势
+        document.addEventListener('gesturestart', (e) => {
+            e.preventDefault();
+        }, false);
     }
 
     // 创建卡片池
@@ -106,12 +127,28 @@ class YangGame {
                 cardEl.style.top = `${posY}px`;
                 cardEl.style.zIndex = index;
                 
-                // 添加点击事件
-                cardEl.addEventListener('click', (e) => {
+                // 检查是否可点击
+                const clickable = this.isCardClickable(card.id);
+                if (!clickable) {
+                    cardEl.classList.add('unclickable');
+                    cardEl.style.pointerEvents = 'none';
+                }
+                
+                // 添加点击事件 - 使用 mousedown 避免点击穿透
+                cardEl.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    this.clickCard(card.id);
+                    e.cancelBubble = true;
+                    this.clickCard(card.id, e);
                 }, false);
+                
+                // 也支持 touch 事件
+                cardEl.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.cancelBubble = true;
+                    this.clickCard(card.id, e);
+                }, { passive: false });
                 
                 cardEl.style.animationDelay = `${index * 0.012}s`;
                 
@@ -135,11 +172,18 @@ class YangGame {
     }
 
     // 点击卡片
-    clickCard(cardId) {
+    clickCard(cardId, e) {
         // 阻止默认行为和事件冒泡
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.cancelBubble = true;
+            return false;
+        }
+        
+        // 检查这张卡片是否在最上层（可以被点击）
+        if (!this.isCardClickable(cardId)) {
+            return false;
         }
         
         const cardIndex = this.cardPool.findIndex(c => c.id === cardId);
@@ -169,6 +213,66 @@ class YangGame {
         
         // 检查胜利
         this.checkWin();
+    }
+    
+    // 检查卡片是否可以被点击（是否在最上层）
+    isCardClickable(cardId) {
+        const cardIndex = this.cardPool.findIndex(c => c.id === cardId);
+        if (cardIndex === -1) return false;
+        
+        const clickedCard = this.cardPool[cardIndex];
+        const cardWidth = 50;
+        const cardHeight = 58;
+        
+        // 检查是否有其他卡片压在这张卡片上面
+        for (let i = cardIndex + 1; i < this.cardPool.length; i++) {
+            const otherCard = this.cardPool[i];
+            
+            // 计算两张卡片的位置（需要从 DOM 获取，这里简化处理）
+            // 如果其他卡片的 zIndex 更大，且位置重叠，则不能点击
+            if (i > cardIndex) {
+                // 简化的碰撞检测：如果索引更大，认为在上面
+                // 实际需要检测位置重叠
+                const pos1 = this.getCardPosition(cardIndex);
+                const pos2 = this.getCardPosition(i);
+                
+                // 检测是否重叠
+                if (this.isOverlapping(pos1, pos2, cardWidth, cardHeight)) {
+                    return false; // 被压住了，不能点击
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    // 获取卡片位置
+    getCardPosition(index) {
+        const poolEl = document.getElementById('cardPool');
+        const poolWidth = poolEl.clientWidth || 320;
+        const poolHeight = poolEl.clientHeight || 420;
+        const cardWidth = 50;
+        const cardHeight = 58;
+        const layers = 6;
+        const cardsPerLayer = Math.ceil(this.cardPool.length / layers);
+        const layer = Math.floor(index / cardsPerLayer);
+        const layerOffsetX = layer * 3;
+        const layerOffsetY = layer * 2;
+        const maxX = poolWidth - cardWidth - 20;
+        const maxY = poolHeight - cardHeight - 20;
+        const randomX = Math.sin(index * 13.7) * (maxX * 0.8);
+        const randomY = Math.cos(index * 19.3) * (maxY * 0.8);
+        return {
+            x: 10 + Math.abs(randomX) + layerOffsetX,
+            y: 10 + Math.abs(randomY) + layerOffsetY
+        };
+    }
+    
+    // 检测两个卡片是否重叠
+    isOverlapping(pos1, pos2, width, height) {
+        const padding = 10; // 留一点余量
+        return Math.abs(pos1.x - pos2.x) < (width - padding) &&
+               Math.abs(pos1.y - pos2.y) < (height - padding);
     }
 
     // 点击槽位中的卡片（撤销操作）

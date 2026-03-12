@@ -120,8 +120,18 @@ h1 {
     transition: all 0.12s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), inset 0 2px 4px rgba(255,255,255,0.3);
     user-select: none;
+    user-drag: none;
+    -webkit-user-drag: none;
     position: absolute;
     overflow: visible;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 被压住的卡片样式 */
+.card.unclickable {
+    cursor: not-allowed;
+    opacity: 0.85;
+    filter: brightness(0.9);
 }
 
 .card::before {
