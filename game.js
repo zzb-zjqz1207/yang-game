@@ -184,13 +184,6 @@ class YangGame {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
-            e.cancelBubble = true;
-            return false;
-        }
-        
-        // 检查这张卡片是否在最上层（可以被点击）
-        if (!this.isCardClickable(cardId)) {
-            return false;
         }
         
         const cardIndex = this.cardPool.findIndex(c => c.id === cardId);
