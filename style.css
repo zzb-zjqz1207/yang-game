@@ -5,22 +5,25 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    margin: 0;
 }
 
 .game-container {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 420px;
     width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 header {
@@ -29,137 +32,166 @@ header {
 }
 
 h1 {
-    color: #333;
-    font-size: 2em;
-    margin-bottom: 15px;
+    color: #1a1a1a;
+    font-size: 1.8em;
+    margin-bottom: 16px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.5px;
 }
 
 .score-board {
     display: flex;
-    justify-content: space-around;
-    background: #f0f0f0;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 1.1em;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 1em;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .score-board span {
-    color: #555;
-    font-weight: bold;
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.95em;
 }
 
 /* 卡片堆叠区域 */
 .card-pool {
-    min-height: 300px;
-    background: #f8f9fa;
-    border-radius: 15px;
-    padding: 20px;
+    min-height: 380px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 16px;
     margin-bottom: 20px;
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* 槽位区域 */
 .slot-container {
-    background: #e9ecef;
-    border-radius: 10px;
-    padding: 15px;
+    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+    border-radius: 14px;
+    padding: 16px;
     margin-bottom: 20px;
+    border: 2px solid #feb2b2;
+    box-shadow: 0 2px 8px rgba(254, 180, 180, 0.3);
 }
 
 .slot {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    min-height: 70px;
+    gap: 10px;
+    min-height: 68px;
     flex-wrap: wrap;
 }
 
 /* 卡片样式 */
 .card {
-    width: 60px;
-    height: 70px;
-    background: linear-gradient(145deg, #ffffff, #e6e6e6);
-    border: 2px solid #ddd;
-    border-radius: 10px;
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: linear-gradient(145deg, #ffffff 0%, #f7f7f7 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2em;
+    font-size: 1.8em;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
     user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+    border-radius: 12px 12px 0 0;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25), 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
 }
 
 .card:active {
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.02);
 }
 
 .card.slot-card {
-    width: 50px;
-    height: 60px;
-    font-size: 1.5em;
+    width: 48px;
+    height: 58px;
+    font-size: 1.4em;
+    border-radius: 10px;
 }
 
-/* 卡片堆叠效果 */
-.card-layer {
-    position: absolute;
-    transition: all 0.3s ease;
-}
+/* 卡片堆叠效果 - 已移除，改为网格布局 */
 
 /* 工具按钮 */
 .tools {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
     margin-bottom: 20px;
 }
 
 .tool-btn {
-    background: linear-gradient(145deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 10px;
+    padding: 14px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: all 0.2s ease;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    letter-spacing: 0.3px;
 }
 
 .tool-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.45);
+}
+
+.tool-btn:active {
+    transform: translateY(-1px);
 }
 
 .tool-btn:disabled {
-    background: #ccc;
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
     cursor: not-allowed;
-    transform: none;
+    box-shadow: none;
 }
 
 .tool-btn .count {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ff6b6b;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
     color: white;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 0.7em;
+    width: 22px;
+    height: 22px;
+    font-size: 0.75em;
+    font-weight: 700;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 2px 6px rgba(245, 101, 101, 0.4);
 }
 
 /* 控制按钮 */
@@ -168,19 +200,26 @@ h1 {
 }
 
 .action-btn {
-    background: linear-gradient(145deg, #51cf66, #37b24d);
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
     color: white;
     border: none;
-    padding: 15px 40px;
-    border-radius: 10px;
+    padding: 14px 48px;
+    border-radius: 14px;
     cursor: pointer;
-    font-size: 1.1em;
-    transition: all 0.2s ease;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(72, 187, 120, 0.35);
+    letter-spacing: 0.5px;
 }
 
 .action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(72, 187, 120, 0.45);
+}
+
+.action-btn:active {
+    transform: translateY(-1px);
 }
 
 /* 弹窗 */
@@ -191,7 +230,8 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -203,38 +243,58 @@ h1 {
 
 .modal-content {
     background: white;
-    padding: 40px;
+    padding: 40px 32px;
     border-radius: 20px;
     text-align: center;
-    max-width: 400px;
-    animation: slideIn 0.3s ease;
+    max-width: 380px;
+    animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes slideIn {
     from {
-        transform: translateY(-50px);
+        transform: translateY(-40px) scale(0.95);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
 }
 
 .modal-content h2 {
-    color: #333;
-    margin-bottom: 15px;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+    font-size: 1.6em;
+    font-weight: 700;
 }
 
 .modal-content p {
-    color: #666;
-    margin-bottom: 25px;
-    font-size: 1.1em;
+    color: #718096;
+    margin-bottom: 28px;
+    font-size: 1.05em;
+    line-height: 1.6;
+}
+
+/* 卡片出现动画 */
+.card {
+    animation: cardAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 /* 消除动画 */
 .card.matched {
-    animation: matchAnim 0.5s ease forwards;
+    animation: matchAnim 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes matchAnim {
@@ -243,7 +303,7 @@ h1 {
         opacity: 1;
     }
     50% {
-        transform: scale(1.2);
+        transform: scale(1.15) rotate(5deg);
         opacity: 0.8;
     }
     100% {

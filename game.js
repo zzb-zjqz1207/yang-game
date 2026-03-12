@@ -71,15 +71,10 @@ class YangGame {
         this.cardPool.forEach((card, index) => {
             if (!card.matched) {
                 const cardEl = document.createElement('div');
-                cardEl.className = 'card card-layer';
+                cardEl.className = 'card';
                 cardEl.textContent = card.symbol;
                 cardEl.onclick = () => this.clickCard(card.id);
-                
-                // 随机偏移，制造堆叠效果
-                const offsetX = (Math.random() - 0.5) * 40;
-                const offsetY = (Math.random() - 0.5) * 40;
-                cardEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-                cardEl.style.zIndex = index;
+                cardEl.style.animationDelay = `${index * 0.02}s`;
                 
                 poolEl.appendChild(cardEl);
             }
