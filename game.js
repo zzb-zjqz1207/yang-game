@@ -63,18 +63,58 @@ class YangGame {
         }
     }
 
-    // 渲染卡片池
+    // 渲染卡片池 - 堆叠布局
     renderCardPool() {
         const poolEl = document.getElementById('cardPool');
         poolEl.innerHTML = '';
+        
+        const poolWidth = poolEl.clientWidth || 320;
+        const poolHeight = poolEl.clientHeight || 400;
+        const cardWidth = 52;
+        const cardHeight = 62;
+        
+        // 将卡片分成 3-4 层，每层随机分布
+        const layers = 4;
+        const cardsPerLayer = Math.ceil(this.cardPool.length / layers);
         
         this.cardPool.forEach((card, index) => {
             if (!card.matched) {
                 const cardEl = document.createElement('div');
                 cardEl.className = 'card';
                 cardEl.textContent = card.symbol;
-                cardEl.onclick = () => this.clickCard(card.id);
-                cardEl.style.animationDelay = `${index * 0.02}s`;
+                cardEl.dataset.id = card.id;
+                
+                // 计算层级和位置
+                const layer = Math.floor(index / cardsPerLayer);
+                const cardsInLayer = index % cardsPerLayer;
+                
+                // 每层的基础偏移
+                const layerOffsetX = layer * 8;
+                const layerOffsetY = layer * 6;
+                
+                // 在层内随机分布
+                const maxX = poolWidth - cardWidth - 40;
+                const maxY = poolHeight - cardHeight - 40;
+                
+                // 使用确定性随机（基于索引），保证每次渲染位置一致
+                const randomX = Math.sin(index * 17) * maxX;
+                const randomY = Math.cos(index * 23) * maxY;
+                
+                const posX = 20 + Math.abs(randomX) + layerOffsetX;
+                const posY = 20 + Math.abs(randomY) + layerOffsetY;
+                
+                cardEl.style.left = `${posX}px`;
+                cardEl.style.top = `${posY}px`;
+                cardEl.style.zIndex = index;
+                
+                // 添加点击事件
+                cardEl.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.clickCard(card.id);
+                }, false);
+                
+                cardEl.style.animationDelay = `${index * 0.015}s`;
                 
                 poolEl.appendChild(cardEl);
             }
@@ -97,6 +137,12 @@ class YangGame {
 
     // 点击卡片
     clickCard(cardId) {
+        // 阻止默认行为和事件冒泡
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
         const cardIndex = this.cardPool.findIndex(c => c.id === cardId);
         if (cardIndex === -1) return;
         

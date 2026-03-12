@@ -59,15 +59,13 @@ h1 {
 
 /* 卡片堆叠区域 */
 .card-pool {
-    min-height: 380px;
+    min-height: 400px;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 16px;
-    padding: 16px;
+    padding: 20px;
     margin-bottom: 20px;
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 8px;
+    overflow: hidden;
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -92,21 +90,21 @@ h1 {
 
 /* 卡片样式 */
 .card {
-    width: 100%;
-    aspect-ratio: 4/5;
+    width: 52px;
+    height: 62px;
     background: linear-gradient(145deg, #ffffff 0%, #f7f7f7 100%);
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.8em;
+    font-size: 1.5em;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.15s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
     user-select: none;
-    position: relative;
-    overflow: hidden;
+    position: absolute;
+    overflow: visible;
 }
 
 .card::before {
@@ -116,28 +114,28 @@ h1 {
     left: 0;
     right: 0;
     height: 40%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
-    border-radius: 12px 12px 0 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
+    border-radius: 10px 10px 0 0;
 }
 
 .card:hover {
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25), 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3), 0 3px 8px rgba(0, 0, 0, 0.12);
     border-color: #667eea;
+    z-index: 1000 !important;
 }
 
 .card:active {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-1px) scale(1.05);
 }
 
 .card.slot-card {
-    width: 48px;
-    height: 58px;
-    font-size: 1.4em;
-    border-radius: 10px;
+    width: 46px;
+    height: 56px;
+    font-size: 1.3em;
+    border-radius: 8px;
+    position: relative;
 }
-
-/* 卡片堆叠效果 - 已移除，改为网格布局 */
 
 /* 工具按钮 */
 .tools {
