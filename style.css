@@ -6,24 +6,23 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(180deg, #c8e6a8 0%, #a8d878 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
     margin: 0;
 }
 
 .game-container {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 420px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    max-width: 400px;
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid #8bc34a;
 }
 
 header {
@@ -59,49 +58,67 @@ h1 {
 
 /* 卡片堆叠区域 */
 .card-pool {
-    min-height: 400px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
+    min-height: 420px;
+    background: linear-gradient(180deg, #8d6e63 0%, #6d4c41 100%);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
     position: relative;
-    overflow: hidden;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: visible;
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 4px solid #5d4037;
 }
 
-/* 槽位区域 */
+/* 卡片堆叠背景格子 */
+.card-pool::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(0,0,0,0.1) 48px, rgba(0,0,0,0.1) 52px),
+        repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(0,0,0,0.1) 48px, rgba(0,0,0,0.1) 52px);
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+/* 槽位区域 - 木质槽 */
 .slot-container {
-    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 20px;
-    border: 2px solid #feb2b2;
-    box-shadow: 0 2px 8px rgba(254, 180, 180, 0.3);
+    background: linear-gradient(180deg, #8d6e63 0%, #6d4c41 100%);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 4px solid #5d4037;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .slot {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    min-height: 68px;
+    gap: 8px;
+    min-height: 66px;
     flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 8px;
+    border-radius: 6px;
 }
 
 /* 卡片样式 */
 .card {
-    width: 52px;
-    height: 62px;
-    background: linear-gradient(145deg, #ffffff 0%, #f7f7f7 100%);
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
+    width: 50px;
+    height: 58px;
+    background: linear-gradient(180deg, #fef9e7 0%, #f0e6d2 100%);
+    border: 3px solid #8d6e63;
+    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5em;
+    font-size: 1.4em;
     cursor: pointer;
-    transition: all 0.15s ease;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: all 0.12s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), inset 0 2px 4px rgba(255,255,255,0.3);
     user-select: none;
     position: absolute;
     overflow: visible;
@@ -110,30 +127,30 @@ h1 {
 .card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
-    border-radius: 10px 10px 0 0;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    height: 35%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+    border-radius: 6px 6px 0 0;
 }
 
 .card:hover {
-    transform: translateY(-3px) scale(1.08);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3), 0 3px 8px rgba(0, 0, 0, 0.12);
-    border-color: #667eea;
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255,255,255,0.4);
+    border-color: #5d4037;
     z-index: 1000 !important;
 }
 
 .card:active {
-    transform: translateY(-1px) scale(1.05);
+    transform: translateY(-2px) scale(1.05);
 }
 
 .card.slot-card {
-    width: 46px;
-    height: 56px;
+    width: 44px;
+    height: 54px;
     font-size: 1.3em;
-    border-radius: 8px;
+    border-radius: 6px;
     position: relative;
 }
 

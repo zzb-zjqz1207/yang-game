@@ -63,18 +63,18 @@ class YangGame {
         }
     }
 
-    // 渲染卡片池 - 堆叠布局
+    // 渲染卡片池 - 堆叠布局（类似羊了个羊）
     renderCardPool() {
         const poolEl = document.getElementById('cardPool');
         poolEl.innerHTML = '';
         
         const poolWidth = poolEl.clientWidth || 320;
-        const poolHeight = poolEl.clientHeight || 400;
-        const cardWidth = 52;
-        const cardHeight = 62;
+        const poolHeight = poolEl.clientHeight || 420;
+        const cardWidth = 50;
+        const cardHeight = 58;
         
-        // 将卡片分成 3-4 层，每层随机分布
-        const layers = 4;
+        // 将卡片分成 5-6 层，模拟原版的多层堆叠
+        const layers = 6;
         const cardsPerLayer = Math.ceil(this.cardPool.length / layers);
         
         this.cardPool.forEach((card, index) => {
@@ -84,24 +84,23 @@ class YangGame {
                 cardEl.textContent = card.symbol;
                 cardEl.dataset.id = card.id;
                 
-                // 计算层级和位置
+                // 计算层级
                 const layer = Math.floor(index / cardsPerLayer);
-                const cardsInLayer = index % cardsPerLayer;
                 
-                // 每层的基础偏移
-                const layerOffsetX = layer * 8;
-                const layerOffsetY = layer * 6;
+                // 每层的基础偏移（向上堆叠）
+                const layerOffsetX = layer * 3;
+                const layerOffsetY = layer * 2;
                 
-                // 在层内随机分布
-                const maxX = poolWidth - cardWidth - 40;
-                const maxY = poolHeight - cardHeight - 40;
+                // 在层内按网格分布，但有轻微随机偏移
+                const maxX = poolWidth - cardWidth - 20;
+                const maxY = poolHeight - cardHeight - 20;
                 
                 // 使用确定性随机（基于索引），保证每次渲染位置一致
-                const randomX = Math.sin(index * 17) * maxX;
-                const randomY = Math.cos(index * 23) * maxY;
+                const randomX = Math.sin(index * 13.7) * (maxX * 0.8);
+                const randomY = Math.cos(index * 19.3) * (maxY * 0.8);
                 
-                const posX = 20 + Math.abs(randomX) + layerOffsetX;
-                const posY = 20 + Math.abs(randomY) + layerOffsetY;
+                const posX = 10 + Math.abs(randomX) + layerOffsetX;
+                const posY = 10 + Math.abs(randomY) + layerOffsetY;
                 
                 cardEl.style.left = `${posX}px`;
                 cardEl.style.top = `${posY}px`;
@@ -114,7 +113,7 @@ class YangGame {
                     this.clickCard(card.id);
                 }, false);
                 
-                cardEl.style.animationDelay = `${index * 0.015}s`;
+                cardEl.style.animationDelay = `${index * 0.012}s`;
                 
                 poolEl.appendChild(cardEl);
             }
